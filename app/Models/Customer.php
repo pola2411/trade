@@ -12,7 +12,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
-class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
+class Customer extends Authenticatable implements JWTSubject
 {
     use HasFactory,Notifiable;
     protected $guarded=['id'];
