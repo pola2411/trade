@@ -16,11 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('gender', array('Male','Female'))->nullable();
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('avtar',300)->default('l60Hf.png')->nullable();
-            $table->longText('address')->nullable();
             $table->longText('image_id_front')->nullable();
             $table->longText('image_id_back')->nullable();
             $table->boolean('is_verified')->default(false);

@@ -33,6 +33,30 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+             // Determine if the input is an email or phone and adjust rules accordingly
+             $rules = [
+                'password' => ['required'],
+                'email' => [
+                    'required',
+                    'numeric',
+                    'regex:/^(5|6|9)[0-9]{7}$/',
+                    'exists:customers,email',
+
+
+                ],
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                // Collect all error messages
+                $errorMessages = $validator->errors()->all();
+
+                // Combine all messages into a single string
+                $combinedErrorMessage = implode(' ', $errorMessages);
+
+                return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
+            }
+
         try {
 
             $user = Customer::where('email', $request->phone)->first();
