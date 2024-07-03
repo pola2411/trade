@@ -37,10 +37,8 @@ class AuthController extends Controller
              $rules = [
                 'password' => ['required'],
                 'email' => [
-                    'required',
-                    'numeric',
-                    'regex:/^(5|6|9)[0-9]{7}$/',
-                    'exists:customers,email',
+                    'required'
+                    , 'email', 'max:255', 'unique:customers,email',
 
 
                 ],
@@ -90,8 +88,7 @@ class AuthController extends Controller
             // Base rules for all inputs
             $rules = [
                 'name' => ['required', 'string', 'max:255'],
-               'gender' => ['nullable', 'in:Male,Female'],
-               'email' => ['nullable', 'email', 'max:255', 'unique:customers,email'],
+                'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
                 'phone' => [
                     'required',
                     'numeric',
@@ -99,7 +96,6 @@ class AuthController extends Controller
                     'unique:customers,phone'
                 ],
                 'password' => ['required', 'string', 'min:6'],
-                'address' => ['nullable', 'string', 'max:255'],
                 'avtar' => ['nullable','string','max:300'], // Updated to validate image and size limit to 1MB
                 'image_id_front' => ['nullable','string','max:300'], // Updated to validate image and size limit to 1MB
                 'image_id_back' => ['nullable','string','max:300'], // Updated to validate image and size limit to 1MB
@@ -110,8 +106,7 @@ class AuthController extends Controller
                 'name.required' => __('validation.custom.name.required'),
                 'name.string' => __('validation.custom.name.string'),
                 'name.max' => __('validation.custom.name.max'),
-                'gender.nullable' => __('validation.custom.gender.required'),
-                'gender.in' => __('validation.custom.gender.in'),
+
                 'email.nullable' => __('validation.custom.email.required'),
                 'email.email' => __('validation.custom.email.email'),
                 'email.max' => __('validation.custom.email.max'),
@@ -157,7 +152,6 @@ class AuthController extends Controller
                 'phone' => $request->phone,
                 'name' => $request->name,
                 'password' => Hash::make($request->password),
-                'gender' => $request->gender,
                 'avtar' => $request->avtar,
                 'image_id_back' =>  $request->image_id_back,
                 'image_id_front' => $request->image_id_front,
@@ -214,11 +208,8 @@ class AuthController extends Controller
         $rules = [
             'password' => ['required', 'min:6', 'confirmed'],
             'email' => [
-                'required',
-                'numeric',
-                'regex:/^(5|6|9)[0-9]{7}$/',
-                'exists:customers,email',
-
+                'required'
+                , 'email', 'max:255', 'unique:customers,email',
 
             ],
         ];
