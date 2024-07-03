@@ -156,7 +156,7 @@ class AuthController extends Controller
                 'image_id_back' =>  $request->image_id_back,
                 'image_id_front' => $request->image_id_front,
                 'birthday' => $request->birthday,
-                'is_verified' => 1,
+                'is_verified' => 0,
                 'status' => 0,
             ]);
 
@@ -250,15 +250,15 @@ class AuthController extends Controller
 
     public function resend(Request $request)
     {
-        if ($request->user()->hasVerifiedEmail()) {
-            return $this->onSuccess(400, __('messages.Email_already_verified'), true);
+        $customer = $request->user();
 
+        if ($customer->hasVerifiedEmail()) {
+            return response()->json(['message' => __('messages.Email_already_verified')], 400);
         }
 
-        $request->user()->sendEmailVerificationNotification();
+        $customer->sendEmailVerificationNotification();
 
-        return $this->onSuccess(200, __('messages.Verification_link_sent'), true);
-
+        return response()->json(['message' => __('messages.Verification_link_sent')], 200);
     }
 
 

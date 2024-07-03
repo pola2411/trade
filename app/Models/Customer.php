@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
-class Customer extends Authenticatable implements JWTSubject
+class Customer extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
     use HasFactory,Notifiable;
     protected $guarded=['id'];
