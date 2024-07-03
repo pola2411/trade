@@ -7,6 +7,7 @@ use App\Models\OTP;
 use App\Utils\helper;
 use App\Models\ageRange;
 use App\Models\Customer;
+use App\Models\otp_register;
 use Illuminate\Http\Request;
 use App\Http\Traits\HelperApi;
 use Illuminate\Support\Carbon;
@@ -14,11 +15,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ImageProcessing;
-use App\Models\otp_register;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 class AuthController extends Controller
@@ -34,7 +35,7 @@ class AuthController extends Controller
     {
         try {
 
-            $user = Customer::where('phone', $request->phone)->first();
+            $user = Customer::where('email', $request->phone)->first();
 
             if ($user && (!Hash::check($request->password, $user->password))) {
                 return $this->onError(401, __('messages.general.invalid_data'));
@@ -57,76 +58,7 @@ class AuthController extends Controller
         }
     }
 
-    public function checphone(Request $request){
-          // Base rules for all inputs
-          $rules = [
 
-            'phone' => [
-                'required',
-                'numeric',
-                'regex:/^(5|6|9)[0-9]{7}$/',
-                'unique:customers,phone'
-            ],
-
-        ];
-
-        $customMessages = [
-            'phone.required' => __('validation.custom.phone.required'),
-            'phone.numeric' => __('validation.custom.phone.numeric'),
-            'phone.regex' => __('validation.custom.phone.regex'),
-            'phone.unique' => __('validation.custom.phone.unique'),
-
-        ];
-
-            // Perform validation
-            $validator = Validator::make($request->all(), $rules, $customMessages);
-            if ($validator->fails()) {
-                // Collect all error messages
-                $errorMessages = $validator->errors()->all();
-
-                // Combine all messages into a single string
-                $combinedErrorMessage = implode(' ', $errorMessages);
-
-                return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
-            }
-            $otp = random_int(1000, 9999);
-            $expires_at = now()->addMinutes(10); // Set expiration time
-
-            // Create or update existing OTP record
-            otp_register::updateOrCreate(
-                ['phone' => $request->phone],
-                ['otp' => '1234', 'expires_at' => $expires_at]
-            );
-
-            return $this->onSuccess(200, __('messages.general.otp_send'), true);
-
-
-
-    }
-    public function verifyOtpForRegister(Request $request)
-    {
-
-        $request->validate(['otp' => 'required','phone'=>'required']);
-
-        $otpEntry = otp_register::where('phone', $request->phone)
-            ->where('otp', $request->otp)
-            ->where('expires_at', '>', now())
-            ->latest() // Retrieve the latest record based on the created_at timestamp
-            ->first(); // Retrieve the first matching record
-
-        // Fetch the user ID using a helper function and then fetch the user model
-
-        if (!$otpEntry) {
-            return $this->onError(402, __('messages.general.otp_false'), false);
-        }
-        // Optionally, delete the OTP entry if it should not be reused
-        $otpEntry->delete();
-
-        // OTP is valid
-        // Here, you might want to update the user status or perform other actions
-
-        return $this->onSuccess(200, __('messages.general.otp_true'), true);
-    }
     public function register(Request $request)
     {
         try {
@@ -221,64 +153,7 @@ class AuthController extends Controller
         }
     }
 
-    public function verifyOtp(Request $request)
-    {
 
-        $request->validate(['otp' => 'required']);
-
-        $otpEntry = OTP::where('customer_id', helper::customer_id())
-            ->where('otp', $request->otp)
-            ->where('expires_at', '>', now())
-            ->latest() // Retrieve the latest record based on the created_at timestamp
-            ->first(); // Retrieve the first matching record
-
-        // Fetch the user ID using a helper function and then fetch the user model
-        $userId = helper::customer_id();
-        $user = Customer::find($userId); // Ensure you have included User model at the top
-
-        if (!$otpEntry) {
-            return $this->onError(402, __('messages.general.otp_false'), false);
-        }
-        // OTP is valid
-        $user->is_verified = true;
-        $user->save();
-
-        // Optionally, delete the OTP entry if it should not be reused
-        $otpEntry->delete();
-
-        // OTP is valid
-        // Here, you might want to update the user status or perform other actions
-
-        return $this->onSuccess(200, __('messages.general.otp_true'), true);
-    }
-
-    public function sendOtp(Request $request)
-    {
-
-        $userId = helper::customer_id();
-        $user = Customer::find($userId);
-
-        if (!$user) {
-            return $this->onError(404, __('messages.general.user_notfound'));
-        }
-
-        // Generate a four-digit OTP
-        $otp = random_int(1000, 9999);
-        $expires_at = now()->addMinutes(10); // Set expiration time
-
-        // Create or update existing OTP record
-        OTP::updateOrCreate(
-            ['customer_id' => $userId],
-            ['otp' => '1234', 'expires_at' => $expires_at]
-        );
-
-        // // Send OTP via email or SMS
-        // Mail::raw("Your OTP is: $otp", function ($message) use ($user) {
-        //     $message->to($user->email)->subject('Verify Your Account');
-        // });
-
-        return $this->onSuccess(200, __('messages.general.otp_send'), true);
-    }
 
 
     public function logout(Request $request)
@@ -312,92 +187,17 @@ class AuthController extends Controller
     public function forgetpassword(Request $request)
     {
         // Determine if the input is an email or phone and adjust rules accordingly
-        $validatedData = $request->validate([
-            'phone'=>
-            'required',
-            'numeric',
-            'regex:/^(5|6|9)[0-9]{7}$/',
-            'exists:customers,phone',
-        ]);
-
-        $search_by = 'phone';
-        $identifier = $validatedData['phone'];
-
-        $customer = $this->checkUser($identifier, $search_by);
-        if (!$customer) {
-            return $this->onError(404, __('messages.general.user_notfound'));
-        }
-        return $this->sendOtpToUser($customer);
-        return $this->onSuccess(200, __('messages.general.otp_send'), true);
-        // Perform validation
-    }
-
-    private function checkUser($identifier, $search_by)
-    {
-        return Customer::where($search_by, $identifier)->first();
-    }
-
-    private function sendOtpToUser(Customer $customer)
-    {
-        // Generate a four-digit OTP
-        $otp = random_int(1000, 9999);
-        $expires_at = now()->addMinutes(10); // Set expiration time
-
-        // Create or update existing OTP record
-        OTP::updateOrCreate(
-            ['customer_id' => $customer->id],
-            ['otp' =>'1234', 'expires_at' => $expires_at]
-        );
-
-        // Send OTP via email or SMS
-        if ($customer->email) {
-            // Mail::raw("Your OTP is: $otp", function ($message) use ($customer) {
-            //     $message->to($customer->email)->subject('Verify Your Account');
-            // });
-        } else {
-            // Implement SMS sending logic here
-        }
-
-        return $this->onSuccess(200, __('messages.general.otp_send'), true);
-    }
-    public function verifyOtp_for_change_pass(Request $request)
-    {
-
-
-        $request->validate(['otp' => 'required']);
-
-        $otpEntry = OTP::where('otp', $request->otp)
-            ->where('expires_at', '>', now())
-            ->first();
-        // Fetch the user ID using a helper function and then fetch the user model
-
-        if (!$otpEntry) {
-            return $this->onError(402, __('messages.general.otp_false'), false);
-        }
-
-        // OTP is valid
-        // Here, you might want to update the user status or perform other actions
-
-        return $this->onSuccess(200, __('messages.general.otp_true'), true);
-    }
-
-    public function changepass(Request $request)
-    {
         $rules = [
-            'otp' => ['required'],
             'password' => ['required', 'min:6', 'confirmed'],
-            'phone' => [
+            'email' => [
                 'required',
                 'numeric',
                 'regex:/^(5|6|9)[0-9]{7}$/',
-                'exists:customers,phone',
+                'exists:customers,email',
 
 
             ],
         ];
-
-        $search_by = 'phone';
-        $identifier = $request->phone;
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -410,34 +210,40 @@ class AuthController extends Controller
             return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
         }
 
+        $customer= Customer::where('email', $request->email)->first();
 
-        $customer = $this->checkUser($identifier, $search_by);
         if (!$customer) {
             return $this->onError(404, __('messages.general.user_notfound'));
         }
+        $customer->password = Hash::make($request->password);
+        $customer->is_verified = true;
+
+        $customer->save();
+        return $this->onSuccess(200, __('messages.general.change_pass'), true);
+        // Perform validation
+    }
 
 
-        $otpEntry = OTP::where('customer_id', '=', $customer->id)
-            ->where('otp', $request->otp)
-            ->where('expires_at', '>', now())
-            ->first();
-        // Fetch the user ID using a helper function and then fetch the user model
 
-        if (!$otpEntry) {
-            return $this->onError(402, __('messages.general.otp_false'), false);
+    public function verify(EmailVerificationRequest $request)
+    {
+        $request->fulfill();
+
+        return $this->onSuccess(200, __('messages.Email_verified'), true);
+
+    }
+
+    public function resend(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return $this->onSuccess(400, __('messages.Email_already_verified'), true);
+
         }
 
-        // OTP is valid
-        // Here, you might want to update the user status or perform other actions
-        $cus =  Customer::find($otpEntry->customer_id);
-        $cus->password = Hash::make($request->password);
-        $cus->is_verified = true;
+        $request->user()->sendEmailVerificationNotification();
 
-        $cus->save();
-        $otpEntry->delete();
+        return $this->onSuccess(200, __('messages.Verification_link_sent'), true);
 
-
-        return $this->onSuccess(200, __('messages.general.change_pass'), true);
     }
 
 
@@ -597,7 +403,6 @@ class AuthController extends Controller
 
         if ($request->has('phone') && $request->phone != null && $request->phone != $user->phone) {
                 $user->phone = $request->phone;
-                $user->is_verified = 0;
         }
 
 
