@@ -26,14 +26,14 @@ Route::group(['namespace' => 'API'], function() {
 
     Route::prefix('forget/password')->group(function(){
         Route::post('/', [AuthController::class, 'forgetpassword']);
-
+        Route::post('/verifyOtp', [AuthController::class, 'verifyOtp_for_change_pass']);
+        Route::post('/change/password', [AuthController::class, 'changepass']);
     });
 
-    Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verification.verify');
-    Route::post('email/resend', [AuthController::class, 'resend'])->middleware('auth:api')->name('verification.resend');
-    ///this routes must be login
+   ///this routes must be login
     Route::middleware('jwt.verify')->group(function(){
-
+        Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
+        Route::post('/resend-otp', [AuthController::class, 'sendOtp']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/user', [ApisController::class, 'getUser']);
         Route::post('/user/update', [AuthController::class, 'updateUser']);
