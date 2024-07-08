@@ -19,13 +19,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('avtar',300)->default('l60Hf.png')->nullable();
-            $table->longText('image_id_front')->nullable();
-            $table->longText('image_id_back')->nullable();
-            $table->boolean('is_verified')->default(false);
-            $table->boolean('is_approve_id')->default(false);
-
             $table->date('birthday')->nullable();
             $table->boolean('status')->default(true);
+            $table->unsignedBigInteger('country_id');
+
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

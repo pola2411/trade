@@ -15,6 +15,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ImageProcessing;
+use App\Models\Account;
+use App\Models\Currancy;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Validator;
@@ -34,11 +36,13 @@ class AuthController extends Controller
     public function login(Request $request)
     {
              // Determine if the input is an email or phone and adjust rules accordingly
+
              $rules = [
                 'password' => ['required'],
                 'email' => [
                     'required'
-                    , 'email', 'max:255', 'unique:customers,email',
+                    , 'email', 'max:255', 'exists:customers,email'
+
 
 
                 ],
@@ -57,7 +61,7 @@ class AuthController extends Controller
 
         try {
 
-            $user = Customer::where('email', $request->phone)->first();
+            $user = Customer::where('email', $request->email)->first();
 
             if ($user && (!Hash::check($request->password, $user->password))) {
                 return $this->onError(401, __('messages.general.invalid_data'));
@@ -142,11 +146,7 @@ class AuthController extends Controller
                 return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
             }
 
-            // Handle image upload
 
-
-
-            // Create user
             $user = Customer::create([
                 'email' => $request->email,
                 'phone' => $request->phone,
@@ -158,6 +158,12 @@ class AuthController extends Controller
                 'birthday' => $request->birthday,
                 'is_verified' => 0,
                 'status' => 0,
+            ]);
+            $account=Account::create([
+                'customer_id'=>$user->id,
+                'currancy_id'=>1,
+                'balance'=>100000,
+
             ]);
 
             event(new Registered($user));
