@@ -48,6 +48,7 @@ class ApisController extends Controller
     //// account
     public function create_account(Request $request){
         $rules = [
+            'currancy_id' => ['required', 'exists:currancies,id'],
         ];
 
         $customMessages = [
