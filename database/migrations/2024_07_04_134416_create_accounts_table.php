@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('currancy_id');
             $table->double('balance');
             $table->boolean('type')->default(true);
+            $table->boolean('status')->default(false);
+
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
