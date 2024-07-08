@@ -101,9 +101,8 @@ class AuthController extends Controller
                 ],
                 'password' => ['required', 'string', 'min:6'],
                 'avtar' => ['nullable','string','max:300'], // Updated to validate image and size limit to 1MB
-                'image_id_front' => ['nullable','string','max:300'], // Updated to validate image and size limit to 1MB
-                'image_id_back' => ['nullable','string','max:300'], // Updated to validate image and size limit to 1MB
-                'birthday' => ['nullable', 'date'],
+                 'birthday' => ['nullable', 'date'],
+                 'country_id'=>['required','exists:countries,country_id'],
             ];
 
             $customMessages = [
@@ -122,14 +121,11 @@ class AuthController extends Controller
                 'password.required' => __('validation.custom.password.required'),
                 'password.string' => __('validation.custom.password.string'),
                 'password.min' => __('validation.custom.password.min'),
-                'address.nullable' => __('validation.custom.address.required'),
-                'address.string' => __('validation.custom.address.string'),
-                'address.max' => __('validation.custom.address.max'),
                 'avtar.max' => __('validation.custom.logo.max'), // Change from 'logo.image' to 'logo.max'
-                'image_id_front.max' => __('validation.custom.image_id_front.max'), // Change from 'image_id_front.image' to 'image_id_front.max'
-                'image_id_back.max' => __('validation.custom.image_id_back.max'), // Change from 'image_id_back.image' to 'image_id_back.max'
                 'birthday.nullable' => __('validation.custom.birthday.required'),
                 'birthday.date' => __('validation.custom.birthday.date'),
+                'country_id.required' => __('validation.custom.country.required'),
+                'country_id.exists' => __('validation.custom.country.exists'),
             ];
 
 
@@ -156,8 +152,8 @@ class AuthController extends Controller
                 'image_id_back' =>  $request->image_id_back,
                 'image_id_front' => $request->image_id_front,
                 'birthday' => $request->birthday,
-                'is_verified' => 0,
                 'status' => 0,
+                'country_id'=>$request->country_id
             ]);
             $account=Account::create([
                 'customer_id'=>$user->id,
@@ -196,7 +192,7 @@ class AuthController extends Controller
             return $this->onError(402, __('messages.general.otp_false'), false);
         }
         // OTP is valid
-        $user->is_verified = true;
+      //  $user->is_verified = true;
         $user->save();
 
         // Optionally, delete the OTP entry if it should not be reused

@@ -37,7 +37,7 @@ Route::group(['namespace' => 'API'], function() {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/user', [ApisController::class, 'getUser']);
         Route::post('/user/update', [AuthController::class, 'updateUser']);
-
+        Route::post('create/account',[ApisController::class,'create_account']);
 
     });
 

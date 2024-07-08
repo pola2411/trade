@@ -17,6 +17,7 @@ use App\Models\ContractProgram;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Models\Customer;
 use App\Models\Notifications;
 use App\Models\orderContract;
@@ -44,6 +45,38 @@ class ApisController extends Controller
     //     }
     // }
 
+    //// account
+    public function create_account(Request $request){
+        $rules = [
+        ];
+
+        $customMessages = [
+
+            'currancy_id.required' => __('validation.custom.currancy.required'),
+            'currancy_id.exists' => __('validation.custom.currancy.exists'),
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $customMessages);
+
+        if ($validator->fails()) {
+            // Collect all error messages
+            $errorMessages = $validator->errors()->all();
+
+            // Combine all messages into a single string
+            $combinedErrorMessage = implode(' ', $errorMessages);
+
+            return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
+        }
+
+        Account::create([
+            'customer_id'=>helper::customer_id(),
+            'currancy_id'=>$request->currancy_id,
+            'balance'=>false,
+
+        ]);
+        return $this->onSuccess(200, 'success_create_account');
+
+    }
 
 
 
