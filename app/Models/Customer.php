@@ -28,5 +28,11 @@ class Customer extends Authenticatable implements JWTSubject,MustVerifyEmail
         return [];
     }
     protected $hidden = ['password','remember_token'];
+    public function country(){
+        return $this->belongsTo(Countries::class,'country_id');
+    }
+    public function accounts(){
+        return $this->hasMany(Account::class,'customer_id');
+    }
 
 }
