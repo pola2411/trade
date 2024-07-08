@@ -43,28 +43,51 @@ class DatabaseSeeder extends Seeder
         //    'symble'=>'$'
         // ]);
 
-        DB::table('stocks')->insert([
-                'name'=>'Gold 1 KM',
-                'symble'=>'A7A7',
-                'measure'=>0,
-                'feas_buy'=>10,
-                'feas_seller'=>20,
-                'min_deliverd'=>2,
-                'feas_deliverd_for_one'=>1,
+        // DB::table('stocks')->insert([
+        //         'name'=>'Gold 1 KM',
+        //         'symble'=>'A7A7',
+        //         'measure'=>0,
+        //         'feas_buy'=>10,
+        //         'feas_seller'=>20,
+        //         'min_deliverd'=>2,
+        //         'feas_deliverd_for_one'=>1,
 
+        //     ]);
+
+            DB::table('transaction_statuses')->insert([
+                'title_en'=>'The amount has been deposited',
+                'title_ar'=>'تم ايداع المبلغ'
             ]);
 
-            DB::table('transactions_messagas')->insert([
-                'title_ar'=>'تم ايداع',
-                'title_en'=>''
-
+            DB::table('transaction_statuses')->insert([
+                'title_ar'=>'تم سحب المبلغ',
+                'title_en'=>'The amount has been withdrawn'
             ]);
 
-            DB::table('transactions_messagas')->insert([
-                'title_ar'=>'',
-                'title_en'=>''
-
+            DB::table('fields_types')->insert([
+                'title_ar'=>'نص او رقم',
+                'title_en'=>'text or phone'
             ]);
+            DB::table('fields_types')->insert([
+                'title_ar'=>'صوره او ملف',
+                'title_en'=>'image or file'
+            ]);
+
+
+
+             DB::table('countries')->insert([
+                'title_ar'=>'مصر',
+                'title_en'=>'egypt',
+                'iso'=>'EG',
+                'status'=>true
+            ]);
+            DB::table('countries')->insert([
+                'title_ar'=>'الكويت',
+                'title_en'=>'Kuwait',
+                'iso'=>'KW',
+                'status'=>true
+            ]);
+
 
 
     }

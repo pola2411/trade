@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->boolean('status')->default(true);
             $table->unsignedBigInteger('country_id');
+            $table->boolean('email_verified')->default(false);
 
             $table->softDeletes();
             $table->rememberToken();

@@ -192,7 +192,7 @@ class AuthController extends Controller
             return $this->onError(402, __('messages.general.otp_false'), false);
         }
         // OTP is valid
-      //  $user->is_verified = true;
+        $user->email_verified = true;
         $user->save();
 
         // Optionally, delete the OTP entry if it should not be reused
