@@ -17,11 +17,14 @@ return new class extends Migration
             $table->unsignedBigInteger('approved_by');
 
             $table->double('value');
+            $table->double('feas')->default(0);
             $table->unsignedBigInteger('payment_id');
             $table->boolean('status')->default(false);
             $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
-
+            $table->longText('details_offline')->nullable();
+            $table->mediumText('transaction_id')->nullable();
+            $table->string('transaction_status')->nullable();
 
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
             $table->timestamps();

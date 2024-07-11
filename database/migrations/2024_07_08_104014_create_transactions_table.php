@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->double('value');
             $table->unsignedBigInteger('account_id');
-            $table->unsignedBigInteger('transactions_messagas_id');
+            //$table->unsignedBigInteger('transactions_messagas_id');
             $table->unsignedBigInteger('transactions_status_id');
             $table->unsignedBigInteger('related_id')->nullable();
             $table->string('relatied_model')->nullable();
             $table->foreign('account_id')->references('id')->on('accounts')->onDelete('cascade');
-            $table->foreign('transactions_messagas_id')->references('id')->on('transactions_messagas')->onDelete('cascade');
+    //        $table->foreign('transactions_messagas_id')->references('id')->on('transactions_messagas')->onDelete('cascade');
             $table->foreign('transactions_status_id')->references('id')->on('transaction_statuses')->onDelete('cascade');
 
 

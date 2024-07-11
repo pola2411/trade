@@ -38,31 +38,21 @@ class DatabaseSeeder extends Seeder
         //     'persage'=>0,
         //     'backgroud_color'=>'#EF0808'
         // ]);
-        // DB::table('currancies')->insert([
-        //     'name'=>'dollar',
-        //    'symble'=>'$'
-        // ]);
+        DB::table('currancies')->insert([
+            'name'=>'dollar',
+           'symble'=>'$'
+        ]);
 
-        // DB::table('stocks')->insert([
-        //         'name'=>'Gold 1 KM',
-        //         'symble'=>'A7A7',
-        //         'measure'=>0,
-        //         'feas_buy'=>10,
-        //         'feas_seller'=>20,
-        //         'min_deliverd'=>2,
-        //         'feas_deliverd_for_one'=>1,
-
-        //     ]);
-
-            DB::table('transaction_statuses')->insert([
-                'title_en'=>'The amount has been deposited',
-                'title_ar'=>'تم ايداع المبلغ'
+        DB::table('stocks')->insert([
+                'name'=>'Gold 1 KM',
+                'symble'=>'A7A7',
+                'measure'=>0,
+                'feas_buy'=>10,
+                'feas_seller'=>20,
+                'min_deliverd'=>2,
+                'feas_deliverd_for_one'=>1,
             ]);
 
-            DB::table('transaction_statuses')->insert([
-                'title_ar'=>'تم سحب المبلغ',
-                'title_en'=>'The amount has been withdrawn'
-            ]);
 
             DB::table('fields_types')->insert([
                 'title_ar'=>'نص او رقم',
@@ -86,6 +76,29 @@ class DatabaseSeeder extends Seeder
                 'title_en'=>'Kuwait',
                 'iso'=>'KW',
                 'status'=>true
+            ]);
+              DB::table('payments')->insert([
+                'name'=>'instapay',
+                'type'=>true,
+            ]);
+
+            DB::table('transaction_statuses')->insert([
+                'title_en'=>'The amount has been deposited',
+                'title_ar'=>'تم ايداع المبلغ'
+            ]);
+
+            DB::table('transaction_statuses')->insert([
+                'title_ar'=>'تم سحب المبلغ',
+                'title_en'=>'The amount has been withdrawn'
+            ]);
+            DB::table('transaction_statuses')->insert([
+                'title_en' => 'The deposit request has been made',
+                'title_ar' => 'تم طلب ايداع المبلغ'
+            ]);
+
+            DB::table('transaction_statuses')->insert([
+                'title_en' => 'The withdrawal request has been made',
+                'title_ar' => 'تم طلب سحب المبلغ'
             ]);
 
 

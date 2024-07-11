@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name',300);
             $table->boolean('type')->default(true)->comment('1=>offline,0=>online');
-            $table->longText('details_offline')->nullable();
-            $table->mediumText('transaction_id')->nullable();
-            $table->string('transaction_status')->nullable();
+            $table->double('feas')->default(0);
             $table->timestamps();
         });
     }

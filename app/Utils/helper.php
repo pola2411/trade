@@ -1,6 +1,7 @@
 <?php
 namespace App\Utils;
 
+use App\Models\Account;
 use Illuminate\Support\Facades\App;
 
 class helper
@@ -16,6 +17,15 @@ class helper
     public static function lang_app()
     {
         return App::getLocale();
+    }
+
+    public static function get_account($id){
+        $account=Account::where('id',$id)->where('customer_id',self::customer_id());
+        if($account){
+            return $account;
+        }else{
+            return false;
+        }
     }
 
     public static function transformDataByLanguage($data)
