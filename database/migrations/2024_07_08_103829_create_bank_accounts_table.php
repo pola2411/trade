@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->unsignedBigInteger('bank_id');
+            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade');
+
             $table->mediumText('account_num');
             $table->mediumText('account_name');
 

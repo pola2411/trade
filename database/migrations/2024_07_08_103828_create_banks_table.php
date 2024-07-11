@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('banks', function (Blueprint $table) {
             $table->id();
-            $table->string('name',300);
-            $table->boolean('type')->default(true)->comment('1=>offline,0=>online');
+            $table->string('title_ar');
+            $table->string('title_en');
             $table->double('feas')->default(0);
             $table->boolean('persage')->comment('0=>fixed,1=>persage')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('banks');
     }
 };

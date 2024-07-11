@@ -13,4 +13,7 @@ class BankAccounts extends Model
         return $this->belongsTo(Customer::class,'customer_id');
     }
 
+    public function bank(){
+        return $this->belongsTo(Banks::class,'bank_id');
+    }
 }
