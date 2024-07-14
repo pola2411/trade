@@ -335,4 +335,11 @@ class ApisController extends Controller
         $transformedData = helper::transformDataByLanguage($bank_accounts->toArray());
         return $this->onSuccess(200, 'found', $transformedData);
     }
+    public function trasactions(Request $request){
+        $account = helper::get_account($request->header('account_id'));
+        $trasactions=Transactions::where('account_id',$account->id)->with('tran_status')->get();
+        $transformedData = helper::transformDataByLanguage($trasactions->toArray());
+        return $this->onSuccess(200, 'found', $transformedData);
+
+    }
 }

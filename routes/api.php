@@ -43,6 +43,7 @@ Route::group(['namespace' => 'API'], function() {
         Route::middleware('check_type_account')->group(function(){
             Route::post('/save/payment/request',[ApisController::class,'save_payment_request']);
             Route::post('/withdrawn',[ApisController::class,'withdrawn']);
+            Route::get('/trasactions',[ApisController::class,'trasactions']);
         });
         Route::get('/currancies', [ApisController::class, 'currancies']);
 
