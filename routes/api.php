@@ -29,6 +29,8 @@ Route::group(['namespace' => 'API'], function() {
         Route::post('/verifyOtp', [AuthController::class, 'verifyOtp_for_change_pass']);
         Route::post('/change/password', [AuthController::class, 'changepass']);
     });
+    Route::get('countries',[AuthController::class,'countries']);
+    Route::get('banks',[AuthController::class,'banks']);
 
    ///this routes must be login
     Route::middleware('jwt.verify')->group(function(){
@@ -37,13 +39,16 @@ Route::group(['namespace' => 'API'], function() {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/user', [ApisController::class, 'getUser']);
         Route::post('/user/update', [AuthController::class, 'updateUser']);
-        Route::post('create/account',[ApisController::class,'create_account']);
-        Route::middleware()->group(function(){
-            Route::post('save/payment/request',[ApisController::class,'save_payment_request']);
-            Route::post('save/payment/request',[ApisController::class,'withdrawn']);
+        Route::post('/create/account',[ApisController::class,'create_account']);
+        Route::middleware('check_type_account')->group(function(){
+            Route::post('/save/payment/request',[ApisController::class,'save_payment_request']);
+            Route::post('/withdrawn',[ApisController::class,'withdrawn']);
         });
+        Route::get('/currancies', [ApisController::class, 'currancies']);
 
+        Route::post('/bank/accounts/store',[ApisController::class,'bank_accounts_store']);
 
+        Route::get('/get/bank/accounts',[ApisController::class,'bank_accounts_get']);
 
 
     });

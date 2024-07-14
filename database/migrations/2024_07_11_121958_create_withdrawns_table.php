@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('withdrawns', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('account_id');
-            $table->unsignedBigInteger('approved_by');
+            $table->unsignedBigInteger('approved_by')->nullable();
             $table->double('value');
             $table->double('feas')->default(0);
             $table->unsignedBigInteger('account_bank_id');

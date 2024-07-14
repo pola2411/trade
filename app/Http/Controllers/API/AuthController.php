@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ImageProcessing;
 use App\Models\Account;
+use App\Models\Banks;
+use App\Models\Countries;
 use App\Models\Currancy;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -30,7 +32,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'changepass', 'verifyOtp_for_change_pass', 'forgetpassword', 'get_age_range','verifyOtpForRegister','checphone']]); //login, register methods won't go through the api guard
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'changepass', 'verifyOtp_for_change_pass', 'forgetpassword', 'get_age_range','verifyOtpForRegister','countries','banks']]); //login, register methods won't go through the api guard
     }
 
     public function login(Request $request)
@@ -102,7 +104,7 @@ class AuthController extends Controller
                 'password' => ['required', 'string', 'min:6'],
                 'avtar' => ['nullable','string','max:300'], // Updated to validate image and size limit to 1MB
                  'birthday' => ['nullable', 'date'],
-                 'country_id'=>['required','exists:countries,country_id'],
+                 'country_id'=>['required','exists:countries,id'],
             ];
 
             $customMessages = [
@@ -567,5 +569,16 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return $this->onError(500, $e->getMessage());
         }
+    }
+    public function countries(){
+        $countries=Countries::where('status',1)->get();
+        $transformedData = helper::transformDataByLanguage($countries->toArray());
+        return $this->onSuccess(200, 'found', $transformedData);
+    }
+    /////banks
+    public function banks(){
+        $banks=Banks::get();
+        $transformedData = helper::transformDataByLanguage($banks->toArray());
+        return $this->onSuccess(200, 'found', $transformedData);
     }
 }

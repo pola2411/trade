@@ -20,7 +20,7 @@ class helper
     }
 
     public static function get_account($id){
-        $account=Account::where('id',$id)->where('customer_id',self::customer_id());
+        $account=Account::where('id',$id)->where('customer_id',self::customer_id())->first();
         if($account){
             return $account;
         }else{

@@ -71,6 +71,7 @@ class Kernel extends HttpKernel
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
         'langmobile'=> \App\Http\Middleware\LangMobile::class,
         'adminauth'=>\App\Http\Middleware\adminauth::class,
+        
         'check_type_account'=> \App\Http\Middleware\check_type_account::class,
 
 

@@ -7,6 +7,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Traits\HelperApi;
+use App\Models\Account; // Import your Account model
+
 
 class check_type_account
 {
@@ -22,7 +24,7 @@ class check_type_account
         $account_id= $request->header('account_id');
 
         $account=helper::get_account($account_id);
-        if($account && $account->type ==0){
+        if($account && $account->type =='0'){
             return $next($request);
         }else{
             return $this->onError(500,'not allow this account');

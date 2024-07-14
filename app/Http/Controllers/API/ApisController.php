@@ -19,6 +19,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\BankAccounts;
+use App\Models\Currancy;
 use App\Models\Customer;
 use App\Models\Notifications;
 use App\Models\orderContract;
@@ -78,7 +79,8 @@ class ApisController extends Controller
         Account::create([
             'customer_id' => helper::customer_id(),
             'currancy_id' => $request->currancy_id,
-            'balance' => false,
+            'balance' => 0,
+            'type' => 0
 
         ]);
         return $this->onSuccess(200, 'success_create_account');
@@ -99,9 +101,9 @@ class ApisController extends Controller
         $customMessages = [
             'payment_id.required' => __('validation.custom.payment.required'),
             'payment_id.exists' => __('validation.custom.payment.exists'),
-            'value.required'=>__('validation.custom.payment.required'),
-            'value.numeric'=>__('validation.custom.payment.numeric'),
-            'value.min'=>__('validation.custom.payment.min'),
+            'value.required' => __('validation.custom.payment.required'),
+            'value.numeric' => __('validation.custom.payment.numeric'),
+            'value.min' => __('validation.custom.payment.min'),
         ];
 
         if ($paymentType->type == 1) {
@@ -129,16 +131,16 @@ class ApisController extends Controller
         DB::beginTransaction();
         try {
             PaymentRequest::create([
-                'account_id'=>$account->id,
-                'value'=>$request->value,
-                'payment_id'=>$request->payment_id,
-                'details_offline'=>json_encode($request->details_offline),
-                'feas'=>$paymentType->feas
+                'account_id' => $account->id,
+                'value' => $request->value,
+                'payment_id' => $request->payment_id,
+                'details_offline' => json_encode($request->details_offline),
+                'feas' => $paymentType->feas
             ]);
             Transactions::create([
-                'account_id'=>$account->id,
-                'value'=>$request->value,
-                'transactions_status_id'=>3
+                'account_id' => $account->id,
+                'value' => $request->value,
+                'transactions_status_id' => 3
             ]);
 
 
@@ -158,7 +160,8 @@ class ApisController extends Controller
         return $payment ? $payment : 'not found';
     }
 
-    public function withdrawn(Request $request){
+    public function withdrawn(Request $request)
+    {
 
         $rules = [
             'account_bank_id' => ['required', 'exists:bank_accounts,id'],
@@ -166,11 +169,11 @@ class ApisController extends Controller
 
         ];
         $customMessages = [
-            'account_bank_id.required' => __('validation.custom.payment.required'),
-            'account_bank_id.exists' => __('validation.custom.payment.exists'),
-            'value.required'=>__('validation.custom.payment.required'),
-            'value.numeric'=>__('validation.custom.payment.numeric'),
-            'value.min'=>__('validation.custom.payment.min'),
+            'account_bank_id.required' => __('validation.custom.account_bank_id.required'),
+            'account_bank_id.exists' => __('validation.custom.account_bank_id.exists'),
+            'value.required' => __('validation.custom.value.required'),
+            'value.numeric' => __('validation.custom.value.numeric'),
+            'value.min' => __('validation.custom.value.min'),
         ];
         $validator = Validator::make($request->all(), $rules, $customMessages);
         if ($validator->fails()) {
@@ -182,45 +185,45 @@ class ApisController extends Controller
             return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
         }
         $account = helper::get_account($request->header('account_id'));
-        $account_bank=BankAccounts::where('id',$request->account_bank_id)->where('customer_id',helper::customer_id)->first();
+        $account_bank = BankAccounts::where('id', $request->account_bank_id)->where('customer_id', helper::customer_id())->first();
 
         if ($account == false) {
             return $this->onError(422, 'not found account');
         }
-        if(!$account_bank){
+        if (!$account_bank) {
             return $this->onError(422, 'not found account_bank');
         }
-        $bank=Banks::where('id',$account_bank->bank_id)->first();
+        $bank = Banks::where('id', $account_bank->bank_id)->first();
         DB::beginTransaction();
         try {
 
-        $total_feas=0;
-        $total=0;
-        if($bank->persage ==0){
-            $total_feas=$bank->feas;
-            $total=$total_feas + $request->value;
-        }else{
-            $total_feas=($request->value * $bank->feas)/100;
-            $total=$total_feas + $request->value;
-        }
-        if($account->balance < $total){
-            return $this->onError(422, 'not found balance');
-        }
+            $total_feas = 0;
+            $total = 0;
+            if ($bank->persage == 0) {
+                $total_feas = $bank->feas;
+                $total = $total_feas + $request->value;
+            } else {
+                $total_feas = ($request->value * $bank->feas) / 100;
+                $total = $total_feas + $request->value;
+            }
+            if ($account->balance < $total) {
+                return $this->onError(422, 'not found balance');
+            }
 
-        Withdrawn::create([
-           'account_id'=>$account->id,
-           'value'=>$request->value,
-           'feas'=>$total_feas,
-           'account_bank_id'=>$request->account_bank_id,
-           'status_id'=>1,
-        ]);
-        $account->balance=$account->balance - $total_feas;
-        $account->update();
-        Transactions::create([
-            'account_id'=>$account->id,
-            'value'=>$request->value,
-            'transactions_status_id'=>4
-        ]);
+            Withdrawn::create([
+                'account_id' => $account->id,
+                'value' => $request->value,
+                'feas' => $total_feas,
+                'account_bank_id' => $request->account_bank_id,
+                'status_id' => 1,
+            ]);
+            $account->balance = $account->balance - $total;
+            $account->update();
+            Transactions::create([
+                'account_id' => $account->id,
+                'value' => $request->value,
+                'transactions_status_id' => 4
+            ]);
 
 
 
@@ -230,10 +233,6 @@ class ApisController extends Controller
             DB::rollBack();
             return $this->onError(500, __('messages.general.some_error'));
         }
-
-
-
-
     }
 
 
@@ -282,5 +281,58 @@ class ApisController extends Controller
         } else {
             return $this->onSuccess(500, __('validation.custom.not_avalable'));
         }
+    }
+    ////get currancies
+    public function currancies()
+    {
+        $currancies = Currancy::get();
+        return $this->onSuccess(200, 'found', $currancies);
+    }
+    public function bank_accounts_store(Request $request)
+    {
+        try {
+
+
+            $rules = [
+                'bank_id' => ['required', 'exists:banks,id'],
+                'account_num' => ['required', 'string'],
+                'account_name' => ['required', 'string']
+            ];
+
+            $customMessages = [
+                'bank_id.required' => __('validation.custom.bank_id.required'),
+                'bank_id.exists' => __('validation.custom.bank_id.exists'),
+                'account_num.required' => __('validation.custom.account_num.required'),
+                'account_num.string' => __('validation.custom.account_num.string'),
+                'account_name.required' => __('validation.custom.account_name.required'),
+                'account_name.string' => __('validation.custom.account_name.string'),
+            ];
+            $validator = Validator::make($request->all(), $rules, $customMessages);
+            if ($validator->fails()) {
+                // Collect all error messages
+                $errorMessages = $validator->errors()->all();
+
+                // Combine all messages into a single string
+                $combinedErrorMessage = implode(' ', $errorMessages);
+                return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
+            }
+            BankAccounts::create([
+                'customer_id' => helper::customer_id(),
+                'bank_id' => $request->bank_id,
+                'account_num' => $request->account_num,
+                'account_name' => $request->account_name
+            ]);
+            return $this->onSuccess(200, __('messages.general.success_store_bank_account'), true);
+        } catch (\Throwable $th) {
+
+            return $this->onError(500, __('messages.general.some_error'));
+        }
+    }
+    public function bank_accounts_get()
+    {
+        $user_id = helper::customer_id();
+        $bank_accounts = BankAccounts::where('customer_id', $user_id)->with('bank')->get();
+        $transformedData = helper::transformDataByLanguage($bank_accounts->toArray());
+        return $this->onSuccess(200, 'found', $transformedData);
     }
 }
