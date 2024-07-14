@@ -21,6 +21,8 @@ use App\Models\Account;
 use App\Models\BankAccounts;
 use App\Models\Currancy;
 use App\Models\Customer;
+use App\Models\CustomerVerifications;
+use App\Models\FieldsCountry;
 use App\Models\Notifications;
 use App\Models\orderContract;
 use App\Models\orderInstallment;
@@ -335,11 +337,69 @@ class ApisController extends Controller
         $transformedData = helper::transformDataByLanguage($bank_accounts->toArray());
         return $this->onSuccess(200, 'found', $transformedData);
     }
-    public function trasactions(Request $request){
+    public function trasactions(Request $request)
+    {
         $account = helper::get_account($request->header('account_id'));
-        $trasactions=Transactions::where('account_id',$account->id)->with('tran_status')->get();
+        $trasactions = Transactions::where('account_id', $account->id)->with('tran_status')->get();
         $transformedData = helper::transformDataByLanguage($trasactions->toArray());
         return $this->onSuccess(200, 'found', $transformedData);
+    }
+    public function get_verifications_country()
+    {
+        $user_id = helper::customer_id();
+        $country = Customer::where('id', '=', $user_id)->select('id', 'country_id')->first();
+        $fields = FieldsCountry::where('country_id', $country->country_id)
+        ->with(['fields.type', 'customer_var' => function($query) use ($user_id) {
+            $query->where('customer_id', 1);
+        }])
+        ->get();
+        $transformedData = helper::transformDataByLanguage($fields->toArray());
+        return $this->onSuccess(200, 'found', $transformedData);
+    }
+    public function store_verifications_customer(Request $request)
+    {
 
+        try {
+            $user_id = helper::customer_id();
+
+            $rules = [
+                'field_country_id' => ['required', 'exists:fields_countries,id'],
+                'value' => ['required', 'string'],
+            ];
+
+            $customMessages = [
+                'field_country_id.required' => __('validation.custom.field_country_id.required'),
+                'field_country_id.exists' => __('validation.custom.field_country_id.exists'),
+                'value.required' => __('validation.custom.value.required'),
+                'value.string' => __('validation.custom.value.string'),
+
+            ];
+            $validator = Validator::make($request->all(), $rules, $customMessages);
+            if ($validator->fails()) {
+                // Collect all error messages
+                $errorMessages = $validator->errors()->all();
+
+                // Combine all messages into a single string
+                $combinedErrorMessage = implode(' ', $errorMessages);
+                return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
+            }
+
+
+            CustomerVerifications::updateOrCreate(
+                [
+                    'field_country_id' => $request->field_country_id,
+                    'customer_id' => $user_id
+                ],
+                [
+                    'value' => $request->value,
+                    'is_vervication' => 0
+                ]
+            );
+
+            return $this->onSuccess(200, __('messages.general.store_verifications_customer'), true);
+        } catch (\Throwable $th) {
+
+            return $this->onError(500, __('messages.general.some_error'));
+        }
     }
 }

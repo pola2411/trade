@@ -9,6 +9,9 @@ class FieldsType extends Model
 {
     use HasFactory;
     protected $guarded=['id'];
-
+    public function fields()
+    {
+        return $this->hasMany(fields::class,'fields_type');
+    }
 
 }

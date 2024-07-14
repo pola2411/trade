@@ -16,4 +16,7 @@ class FieldsCountry extends Model
     public function fields(){
         return $this->belongsTo(Fields::class,'field_id');
     }
+    public function customer_var(){
+        return $this->hasMany(CustomerVerifications::class,'field_country_id');
+    }
 }

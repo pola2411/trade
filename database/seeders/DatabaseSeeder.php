@@ -130,11 +130,41 @@ class DatabaseSeeder extends Seeder
         //     'title_ar' => 'تم الرفض'
         // ]);
 
-        //   DB::table('fields')->insert([
-        //     'title_en' => 'rejecting',
-        //     'title_ar' => 'تم الرفض',
-        //     'fields_type'1
-        // ]);
+          DB::table('fields')->insert([
+            'title_en' => 'please enter id number',
+            'title_ar' =>'يرجى ادخال رقم البطاقه',
+            'fields_type'=>1
+        ]);
+
+        DB::table('fields')->insert([
+            'title_en' => 'please enter image id front',
+            'title_ar' =>'يرجى ادخال صوره البطاقه الاماميه',
+            'fields_type'=>2
+        ]);
+        DB::table('fields')->insert([
+            'title_en' => 'please enter image id back',
+            'title_ar' =>'يرجى ادخال صوره البطاقه الخلفيه',
+            'fields_type'=>2
+        ]);
+        DB::table('fields_countries')->insert([
+            'country_id' => 1,
+            'field_id'=>1
+        ]);
+
+        DB::table('fields_countries')->insert([
+            'country_id' => 1,
+            'field_id'=>2
+        ]);
+
+        DB::table('fields_countries')->insert([
+            'country_id' => 1,
+            'field_id'=>3
+        ]);
+
+        DB::table('fields_countries')->insert([
+            'country_id' => 2,
+            'field_id'=>1
+        ]);
 
 
 
