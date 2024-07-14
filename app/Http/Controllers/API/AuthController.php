@@ -164,7 +164,7 @@ class AuthController extends Controller
 
             ]);
 
-            event(new Registered($user));
+        //    event(new Registered($user));
 
 
             // Generate JWT token
