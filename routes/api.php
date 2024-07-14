@@ -31,6 +31,7 @@ Route::group(['namespace' => 'API'], function() {
     });
     Route::get('countries',[AuthController::class,'countries']);
     Route::get('banks',[AuthController::class,'banks']);
+    Route::post('/upload/file',[ApisController::class,'upload_file']);
 
    ///this routes must be login
     Route::middleware('jwt.verify')->group(function(){
