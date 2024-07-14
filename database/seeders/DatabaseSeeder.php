@@ -38,83 +38,83 @@ class DatabaseSeeder extends Seeder
         //     'persage'=>0,
         //     'backgroud_color'=>'#EF0808'
         // ]);
-        // DB::table('currancies')->insert([
-        //     'name'=>'dollar',
-        //    'symble'=>'$'
-        // ]);
+        DB::table('currancies')->insert([
+            'name'=>'dollar',
+           'symble'=>'$'
+        ]);
 
-        // DB::table('stocks')->insert([
-        //         'name'=>'Gold 1 KM',
-        //         'symble'=>'A7A7',
-        //         'measure'=>0,
-        //         'feas_buy'=>10,
-        //         'feas_seller'=>20,
-        //         'min_deliverd'=>2,
-        //         'feas_deliverd_for_one'=>1,
-        //     ]);
-
-
-        //     DB::table('fields_types')->insert([
-        //         'title_ar'=>'نص او رقم',
-        //         'title_en'=>'text or phone'
-        //     ]);
-        //     DB::table('fields_types')->insert([
-        //         'title_ar'=>'صوره او ملف',
-        //         'title_en'=>'image or file'
-        //     ]);
+        DB::table('stocks')->insert([
+                'name'=>'Gold 1 KM',
+                'symble'=>'A7A7',
+                'measure'=>0,
+                'feas_buy'=>10,
+                'feas_seller'=>20,
+                'min_deliverd'=>2,
+                'feas_deliverd_for_one'=>1,
+            ]);
 
 
-
-        //      DB::table('countries')->insert([
-        //         'title_ar'=>'مصر',
-        //         'title_en'=>'egypt',
-        //         'iso'=>'EG',
-        //         'status'=>true
-        //     ]);
-        //     DB::table('countries')->insert([
-        //         'title_ar'=>'الكويت',
-        //         'title_en'=>'Kuwait',
-        //         'iso'=>'KW',
-        //         'status'=>true
-        //     ]);
-        //       DB::table('payments')->insert([
-        //         'name'=>'instapay',
-        //         'type'=>true,
-        //     ]);
-
-        //     DB::table('transaction_statuses')->insert([
-        //         'title_en'=>'The amount has been deposited',
-        //         'title_ar'=>'تم ايداع المبلغ'
-        //     ]);
-
-        //     DB::table('transaction_statuses')->insert([
-        //         'title_ar'=>'تم سحب المبلغ',
-        //         'title_en'=>'The amount has been withdrawn'
-        //     ]);
-        //     DB::table('transaction_statuses')->insert([
-        //         'title_en' => 'The deposit request has been made',
-        //         'title_ar' => 'تم طلب ايداع المبلغ'
-        //     ]);
-
-        //     DB::table('transaction_statuses')->insert([
-        //         'title_en' => 'The withdrawal request has been made',
-        //         'title_ar' => 'تم طلب سحب المبلغ'
-        //     ]);
+            DB::table('fields_types')->insert([
+                'title_ar'=>'نص او رقم',
+                'title_en'=>'text or phone'
+            ]);
+            DB::table('fields_types')->insert([
+                'title_ar'=>'صوره او ملف',
+                'title_en'=>'image or file'
+            ]);
 
 
 
-        // DB::table('banks')->insert([
-        //     'title_ar'=>'بنك عوده',
-        //     'title_en'=>'Bank Audi',
-        //     'feas'=>10,
-        //     'persage'=>0,
-        // ]);
-        // DB::table('banks')->insert([
-        //     'title_ar'=>'بنك مصر',
-        //     'title_en'=>'Egypt Bank',
-        //     'feas'=>10,
-        //     'persage'=>1,
-        // ]);
+             DB::table('countries')->insert([
+                'title_ar'=>'مصر',
+                'title_en'=>'egypt',
+                'iso'=>'EG',
+                'status'=>true
+            ]);
+            DB::table('countries')->insert([
+                'title_ar'=>'الكويت',
+                'title_en'=>'Kuwait',
+                'iso'=>'KW',
+                'status'=>true
+            ]);
+              DB::table('payments')->insert([
+                'name'=>'instapay',
+                'type'=>true,
+            ]);
+
+            DB::table('transaction_statuses')->insert([
+                'title_en'=>'The amount has been deposited',
+                'title_ar'=>'تم ايداع المبلغ'
+            ]);
+
+            DB::table('transaction_statuses')->insert([
+                'title_ar'=>'تم سحب المبلغ',
+                'title_en'=>'The amount has been withdrawn'
+            ]);
+            DB::table('transaction_statuses')->insert([
+                'title_en' => 'The deposit request has been made',
+                'title_ar' => 'تم طلب ايداع المبلغ'
+            ]);
+
+            DB::table('transaction_statuses')->insert([
+                'title_en' => 'The withdrawal request has been made',
+                'title_ar' => 'تم طلب سحب المبلغ'
+            ]);
+
+
+
+        DB::table('banks')->insert([
+            'title_ar'=>'بنك عوده',
+            'title_en'=>'Bank Audi',
+            'feas'=>10,
+            'persage'=>0,
+        ]);
+        DB::table('banks')->insert([
+            'title_ar'=>'بنك مصر',
+            'title_en'=>'Egypt Bank',
+            'feas'=>10,
+            'persage'=>1,
+        ]);
         DB::table('status_withdrawns')->insert([
             'title_en' => 'pending',
             'title_ar' => 'قيد الانتظار'
