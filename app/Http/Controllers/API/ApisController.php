@@ -36,6 +36,7 @@ use App\Models\User;
 use App\Models\Withdrawn;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use PDO;
 
 class ApisController extends Controller
 {
@@ -86,6 +87,20 @@ class ApisController extends Controller
 
         ]);
         return $this->onSuccess(200, 'success_create_account');
+    }
+    public function get_all_accounts(){
+        try {
+            $user_id = helper::customer_id();
+
+            $accounts=Account::where('customer_id',$user_id)->with('currancy')->get();
+
+            return $this->onSuccess(200, 'found', $accounts);
+
+        } catch (\Throwable $th) {
+            return $this->onError(500, __('messages.general.some_error'));
+
+        }
+
     }
 
     public function save_payment_request(Request $request)

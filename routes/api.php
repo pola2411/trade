@@ -54,6 +54,8 @@ Route::group(['namespace' => 'API'], function() {
 
         Route::get('/get/verifications/country',[ApisController::class,'get_verifications_country']);
         Route::post('/store/verifications/customer',[ApisController::class,'store_verifications_customer']);
+
+        Route::get('/get/all/accounts',[ApisController::class,'get_all_accounts']);
     });
 
 
