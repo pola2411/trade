@@ -141,7 +141,7 @@ class ApisController extends Controller
             $combinedErrorMessage = implode(' ', $errorMessages);
             return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
         }
-        $account = helper::get_account($request->header('account_id'));
+        $account = helper::get_account($request->header('Accept-account'));
         if ($account == false) {
             return $this->onError(422, 'not found account');
         }
@@ -201,7 +201,7 @@ class ApisController extends Controller
             $combinedErrorMessage = implode(' ', $errorMessages);
             return $this->onError(422, $combinedErrorMessage, __('messages.general.validation_error'));
         }
-        $account = helper::get_account($request->header('account_id'));
+        $account = helper::get_account($request->header('Accept-account'));
         $account_bank = BankAccounts::where('id', $request->account_bank_id)->where('customer_id', helper::customer_id())->first();
 
         if ($account == false) {
@@ -354,7 +354,7 @@ class ApisController extends Controller
     }
     public function trasactions(Request $request)
     {
-        $account = helper::get_account($request->header('account_id'));
+        $account = helper::get_account($request->header('Accept-account'));
         $trasactions = Transactions::where('account_id', $account->id)->with('tran_status')->get();
         $transformedData = helper::transformDataByLanguage($trasactions->toArray());
         return $this->onSuccess(200, 'found', $transformedData);

@@ -21,7 +21,7 @@ class check_type_account
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $account_id= $request->header('account_id');
+        $account_id= $request->header('Accept-account');
 
         $account=helper::get_account($account_id);
         if($account && $account->type =='0'){
