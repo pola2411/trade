@@ -6,7 +6,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 
-class BanksUpdateRequest extends FormRequest
+class CurrencyUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,22 +24,23 @@ class BanksUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'title_ar' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'id' => 'required|exists:banks,id'
+            'name' => 'required|string|max:255',
+            'symble' => 'required|string|max:255',
+            'id' => 'required|exists:currancies,id'
 
         ];
     }
 
+
     public function messages()
     {
         return [
-            'title_ar.required' => 'The Arabic month field is required.',
-            'title_ar.string' => 'The Arabic month must be a string.',
-            'title_ar.max' => 'The Arabic month may not be greater than 255 characters.',
-            'title_en.required' => 'The English month field is required.',
-            'title_en.string' => 'The English month must be a string.',
-            'title_en.max' => 'The English month may not be greater than 255 characters.',
+            'name.required' => 'The name field is required.',
+            'name.string' => 'The name must be a string.',
+            'name.max' => 'The name may not be greater than 255 characters.',
+            'symble.required' => 'The symble field is required.',
+            'symble.string' => 'The symble must be a string.',
+            'symble.max' => 'The symble may not be greater than 255 characters.',
             'id.required' => 'The ID field is required.',
             'id.exists' => 'The selected ID is invalid.',
         ];

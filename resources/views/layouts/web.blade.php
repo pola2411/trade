@@ -25,6 +25,8 @@
     <!-- Icons Css -->
     <link href="{{ asset('web/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
+    <link rel="stylesheet" href="{{ asset('web/mycss/mycss.css') }}">
+
     @stack('css')
     @if (App::getLocale() == 'ar')
     <link href="{{ asset('web/assets/css/app-rtl.min.css') }}" rel="stylesheet" type="text/css" />

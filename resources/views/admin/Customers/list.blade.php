@@ -47,13 +47,10 @@ Customers List
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Gender</th>
-                            <th>Adress</th>
-                            <th>Image ID Front</th>
-                            <th>Image ID Back</th>
-                            <th>Is verified (phone)</th>
-                            <th>Is approve id</th>
+                            <th>Country</th>
+                            <th>Avtar</th>
 
+                            <th>email verified</th>
                             <th>Created At</th>
                         </tr>
                     </thead>
@@ -72,7 +69,8 @@ Customers List
 @endsection
 @push('js')
 <script>
- var table = $('#alternative-pagination').DataTable({
+var local = {!! json_encode(App::getLocale()) !!};
+var table = $('#alternative-pagination').DataTable({
     ajax: '{{ route('customer.dataTable') }}',
     columns: [
         {
@@ -83,52 +81,36 @@ Customers List
         },
         { 'data': 'name' },
         {
-            'data': 'email',
-            defaultContent: "Not provided"
+            'data': 'email'
         },
         { 'data': 'phone' },
-        {
-            'data': 'gender',
-            defaultContent: "Not provided"
-        },
-        {
-            'data': 'address',
-            defaultContent: "Not provided"
-        },
+
+        { 'data': null,
+            render: function(data){
+                var name = 'title_' + local;
+                return `${data.country[name]}`;
+            }
+         },
+
         {
             'data': null,
             render: function(data, type, row) {
                 return `
-                    <img src="{{ asset('/') }}/${data.image_id_front}"
+                    <img src="{{ asset('/') }}/${data.avtar}"
                     class="small-image" style="height: 50px; width: 50px" onclick="openFullScreen(this)">
                 `;
             }
         },
-        {
-            'data': null,
-            render: function(data, type, row) {
-                return `
-                    <img src="{{ asset('/') }}/${data.image_id_back}"
-                    class="small-image" style="height: 50px; width: 50px" onclick="openFullScreen(this)">
-                `;
-            }
-        },
+
         {
             'data': null,
             render: function(data) {
-                let status = data.is_verified == 1 ? 'No' : 'Yes';
+                let status = data.email_verified == 1 ? 'No' : 'Yes';
                 let editUrl = '{{ route('customer.is_verified', ':id') }}'.replace(':id', data.id);
                 return `<a href="#" class="btn  btn-primary" onclick="confirmDelete('${editUrl}')">${status}</a>`;
             }
         },
-        {
-            'data': null,
-            render: function(data) {
-                let status = data.is_approve_id == 1 ? 'No' : 'Yes';
-                let editUrl = '{{ route('customer.is_approve_id', ':id') }}'.replace(':id', data.id);
-                return `<a href="#" class="btn  btn-secondary" onclick="confirmDelete('${editUrl}')">${status}</a>`;
-            }
-        },
+
         {
             'data': 'created_at',
             render: function(data, type, row) {

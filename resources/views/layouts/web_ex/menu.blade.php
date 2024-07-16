@@ -162,11 +162,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link @if(request()->is('*/dashboard/banks/list')) active
+                    <a class="nav-link menu-link @if(request()->is('*/dashboard/currency/list')) active
                         @else
 
-                        @endif" href="{{ route('banks.index') }}">
-                        <i class='bx bxs-bank' ></i><span data-key="t-widgets">Banks</span>
+                        @endif" href="{{ route('currency.index') }}">
+                        <i class='bx bx-dollar'></i><span data-key="t-widgets">currency</span>
                     </a>
                 </li>
 

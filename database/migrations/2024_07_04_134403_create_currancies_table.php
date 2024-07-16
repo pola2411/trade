@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('symble');
-            $table->softDeletes();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\BanksController;
-use App\Http\Controllers\Admin\CustomerController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\InterestCalcsController;
+use App\Http\Controllers\Admin\BanksController;
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\OrdersController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\ProgramsController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CurranciesController;
 use App\Http\Controllers\Admin\OrderStatusController;
 use App\Http\Controllers\Admin\PeriodGlobalController;
-use App\Http\Controllers\Admin\ProgramsController;
-use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\InterestCalcsController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 Route::group(
@@ -101,13 +102,15 @@ Route::group(
 
 
         });
-        ///banks start
-        Route::prefix('banks')->group(function(){
-            Route::get('/list',[BanksController::class,'index'])->name('banks.index');
-            Route::get('/dataTable',[BanksController::class,'getData'])->name('banks.dataTable');
-            Route::post('/store',[BanksController::class,'store'])->name('banks.store');
-            Route::post('/update',[BanksController::class,'update'])->name('banks.update');
-            Route::get('/delete/{banks}',[BanksController::class,'delete'])->name('banks.delete');
+        Route::prefix('currency')->group(function(){
+            Route::get('/list',[CurranciesController::class,'index'])->name('currency.index');
+            Route::get('/dataTable',[CurranciesController::class,'getData'])->name('currency.dataTable');
+            Route::post('/store',[CurranciesController::class,'store'])->name('currency.store');
+            Route::post('/update',[CurranciesController::class,'update'])->name('currency.update');
+            Route::get('/delete/{currency}',[CurranciesController::class,'delete'])->name('currency.delete');
+
+            Route::put('/status/change', [CurranciesController::class, 'status'])->name('currency.status');
+
         });
 
         Route::prefix('order/status')->group(function(){

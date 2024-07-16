@@ -4,7 +4,7 @@
 
 @endpush
 @section('title')
-List Banks
+List Currencies
 @endsection
 @section('content')
 
@@ -15,7 +15,7 @@ List Banks
                 <div class="row">
                     <!-- Title Section -->
                     <h5 class="card-title mb-0 col-sm-8 col-md-10">
-                        List Banks
+                        List Currencies
                     </h5>
 
                     <!-- Buttons Section -->
@@ -49,29 +49,27 @@ List Banks
                         </div>
 
 
-                        <form action="{{route('banks.store')}}" method="POST">
+                        <form action="{{route('currency.store')}}" method="POST">
                             @csrf
                             <div class="modal-body">
                                 <div class="row">
 
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="firstNameinput" class="form-label">Title
-                                                (Ar)</label>
-                                            <input type="text" class="form-control" required value="{{old('title_ar')}}"
-                                                name="title_ar" placeholder="please enter Banks name AR"
-                                                id="firstNameinput">
+                                            <label for="Name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" required value="{{old('name')}}"
+                                                name="name" placeholder="please enter Currency name"
+                                                id="Name">
                                         </div>
                                     </div>
                                     <!--end col-->
 
-                                    <div class="col-md-12 my-2">
+                                    <div class="col-md-6 ">
                                         <div class="mb-3">
-                                            <label for="firstNameinput" class="form-label">Title
-                                                (En)</label>
-                                            <input type="text" class="form-control" required value="{{old('title_en')}}"
-                                                name="title_en" placeholder="please enter Banks name EN"
-                                                id="firstNameinput">
+                                            <label for="symble" class="form-label">symble</label>
+                                            <input type="text" class="form-control" required value="{{old('symble')}}"
+                                                name="symble" placeholder="please enter Currency symble"
+                                                id="symble">
                                         </div>
                                     </div>
                                 </div>
@@ -98,31 +96,34 @@ List Banks
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalFullscreenLabel">Update
+                            <h5 class="modal-title" id="exampleModalFullscreenLabel">Update currency
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
-                        <form action="{{route('banks.update')}}" method="POST">
+                        <form action="{{route('currency.update')}}" method="POST">
                             @csrf
 
                             <div class="modal-body">
                                 <div class="row">
                                     <input type="hidden" name="id" id="id">
-                                    <div class="col-md-12">
+
+                                    <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="title_ar" class="form-label">Title (Ar)</label>
-                                            <input type="text" class="form-control" required value="{{old('title_ar')}}"
-                                                name="title_ar" placeholder="please enter Banks name AR" id="title_ar">
+                                            <label for="Name" class="form-label">Name</label>
+                                            <input type="text" class="form-control" required value="{{old('name')}}"
+                                                name="name" placeholder="please enter Currency name"
+                                                id="name_update">
                                         </div>
                                     </div>
                                     <!--end col-->
 
-                                    <div class="col-md-12 my-2">
+                                    <div class="col-md-6 ">
                                         <div class="mb-3">
-                                            <label for="title_en" class="form-label">Title (En)</label>
-                                            <input type="text" class="form-control" required value="{{old('title_en')}}"
-                                                name="title_en" placeholder="please enter Banks name EN" id="title_en">
+                                            <label for="symble" class="form-label">symble</label>
+                                            <input type="text" class="form-control" required value="{{old('symble')}}"
+                                                name="symble" placeholder="please enter Currency symble"
+                                                id="symble_update">
                                         </div>
                                     </div>
 
@@ -145,8 +146,10 @@ List Banks
                     <thead>
                         <tr>
                             <th scope="row">#SSL</th>
-                            <th>Tilte (AR)</th>
-                            <th>Tilte (EN)</th>
+                            <th>Name</th>
+                            <th>Symble</th>
+                            <th>Status</th>
+
                             <th>Action</th>
                             <th>Created At</th>
                         </tr>
@@ -167,7 +170,7 @@ List Banks
 
 <script>
     var table = $('#alternative-pagination').DataTable({
-            ajax: '{{ route('banks.dataTable') }}',
+            ajax: '{{ route('currency.dataTable') }}',
             columns: [
                 {
                     'data': null,
@@ -178,25 +181,42 @@ List Banks
                 },
 
                 {
-                    'data': 'title_ar'
+                    'data': 'name'
 
                 },
                 {
-                    'data': 'title_en'
+                    'data': 'symble'
 
                 },
 
+                {
+                    'data': null,
+                    render: function(data, row, type) {
+                        if (data.status == 1) {
+                            return `<label class="switch">
+                                         <input type="checkbox" data-id="${data.id}" id="status" checked>
+                                         <span class="slider round"></span>
+                                    </label>`
+
+                        } else {
+                            return `<label class="switch">
+                                         <input type="checkbox" data-id="${data.id}" id="status">
+                                         <span class="slider round"></span>
+                                    </label>`
+
+
+                        }
+
+
+                    }
+                },
 
                 {
                     'data': null,
                     render: function(data) {
-                        var editButton = '<button   data-bs-toggle="modal" data-bs-target="#update" class="btn btn-warning edit-btn" data-id="' + data.id + '" data-title_ar="' + data.title_ar  + '" data-title_en="' + data.title_en + '"><i class="bx bxs-edit"></i></button>';
+                        var editButton = '<button   data-bs-toggle="modal" data-bs-target="#update" class="btn btn-warning edit-btn" data-id="' + data.id + '" data-name="' + data.name  + '" data-symble="' + data.symble + '"><i class="bx bxs-edit"></i></button>';
 
-                        var deleteUrl = '{{ route('banks.delete', ':Banks') }}';
-                        deleteUrl = deleteUrl.replace(':Banks', data.id);
-                        var deleteButton = '<a href="#" onclick="confirmDelete(\'' + deleteUrl + '\')"> <i class="bx bxs-trash btn btn-danger"></i></a>';
-
-                        return      editButton + ' '  + deleteButton  ;
+                        return      editButton   ;
 
 
                     }
@@ -231,40 +251,49 @@ List Banks
             table.ajax.reload();
 
         });
-        function confirmDelete(url) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
-        });
-    }
+
 
         $(document).ready(function() {
     // Event listener for edit button
     $(document).on('click', '.edit-btn', function() {
         var id = $(this).data('id');
-        var title_ar = $(this).data('title_ar');
-        var title_en = $(this).data('title_en');
+        var name = $(this).data('name');
+        var symble = $(this).data('symble');
 
         // Populate the modal with the data from the button
         $('#id').val(id);
-        $('#title_ar').val(title_ar);
-        $('#title_en').val(title_en);
+        $('#name_update').val(name);
+        $('#symble_update').val(symble);
 
 
         // Set the selected value of the period dropdown
 
         // Change the form action to the update route with the specific ID
     });
+});
+
+$(document).on('click', '#status', function() {
+
+$.ajax({
+    type: "put",
+    url: "{{ route('currency.status') }}",
+
+    data: {
+        '_token': "{{ csrf_token() }}",
+        'id': $(this).data('id')
+    },
+
+
+    success: function(response) {
+        toastr.success(response.message, '{{ __('validation_custom.Success') }}');
+        table.ajax.reload();
+
+    },
+    error: function(response) { // Use 'error' instead of 'errors'
+    table.ajax.reload();
+    }
+});
+
 });
 
 </script>

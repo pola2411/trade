@@ -16,7 +16,7 @@ class CustomerController extends Controller
     }
     public function getData()
     {
-        $data = Customer::all();
+        $data = Customer::with('country')->get();
 
         return response()->json([
             'data' => $data,
@@ -27,7 +27,7 @@ class CustomerController extends Controller
     public function is_verified($id){
         $customer=Customer::find($id);
         if($customer){
-            $customer->is_verified=!$customer->is_verified;
+            $customer->email_verified=!$customer->email_verified;
             $customer->save();
 
             Toastr::success(__('Successfully change verified'), __('Success'));
@@ -41,22 +41,22 @@ class CustomerController extends Controller
         }
 
     }
-    public function is_approve_id($id){
-     $customer=Customer::find($id);
-        if($customer){
-            $customer->is_approve_id=!$customer->is_approve_id;
-            $customer->save();
+    // public function is_approve_id($id){
+    //  $customer=Customer::find($id);
+    //     if($customer){
+    //         $customer->is_approve_id=!$customer->is_approve_id;
+    //         $customer->save();
 
-            Toastr::success(__('Successfully change approve_id'), __('Success'));
+    //         Toastr::success(__('Successfully change approve_id'), __('Success'));
 
-            return redirect()->back();
+    //         return redirect()->back();
 
-        }else{
-            Toastr::error(__('not found this customer'), __('Error'));
-            return redirect()->back();
+    //     }else{
+    //         Toastr::error(__('not found this customer'), __('Error'));
+    //         return redirect()->back();
 
-        }
-    }
- 
+    //     }
+    // }
+
 
 }
