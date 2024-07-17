@@ -171,11 +171,11 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link @if(request()->is('*/dashboard/order/status/list')) active
+                    <a class="nav-link menu-link @if(request()->is('*/dashboard/country/list')) active
                         @else
 
-                        @endif" href="{{ route('order.status.index') }}">
-                        <i class='bx bx-stats'></i><span data-key="t-widgets">Order Status</span>
+                        @endif" href="{{ route('country.index') }}">
+                        <i class='bx bx-world'></i><span data-key="t-widgets">Countries</span>
                     </a>
                 </li>
 

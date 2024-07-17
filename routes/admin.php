@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BanksController;
+use App\Http\Controllers\Admin\CountryController ;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -108,8 +109,16 @@ Route::group(
             Route::post('/store',[CurranciesController::class,'store'])->name('currency.store');
             Route::post('/update',[CurranciesController::class,'update'])->name('currency.update');
             Route::get('/delete/{currency}',[CurranciesController::class,'delete'])->name('currency.delete');
-
             Route::put('/status/change', [CurranciesController::class, 'status'])->name('currency.status');
+
+        });
+        Route::prefix('country')->group(function(){
+            Route::get('/list',[CountryController::class,'index'])->name('country.index');
+            Route::get('/dataTable',[CountryController::class,'getData'])->name('country.dataTable');
+            Route::post('/store',[CountryController::class,'store'])->name('country.store');
+            Route::post('/update',[CountryController::class,'update'])->name('country.update');
+            Route::get('/delete/{country}',[CountryController::class,'delete'])->name('country.delete');
+            Route::put('/status/change', [CountryController::class, 'status'])->name('country.status');
 
         });
 
