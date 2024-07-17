@@ -176,6 +176,10 @@ class ApisController extends Controller
         $payment = Payments::find($payment_id);
         return $payment ? $payment : 'not found';
     }
+    public function payments(){
+        $payments=Payments::all();
+        return $this->onSuccess(200, 'found', $payments);
+    }
 
     public function withdrawn(Request $request)
     {
